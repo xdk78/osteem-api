@@ -4,7 +4,7 @@ fastify.register(require('fastify-helmet'))
 
 // API Routing
 fastify.register(require('./routes/v1/'), { prefix: '/v1' })
-fastify.register(require('./routes/v1/articles'), { prefix: '/v1' })
+fastify.register(require('./routes/v1/trends'), { prefix: '/v1' })
 
 fastify.get('/', (request, reply) => {
   reply.redirect(302, '/v1')
