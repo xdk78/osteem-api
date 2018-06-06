@@ -23,6 +23,7 @@
   "dependencies": {
     "fastify": "^1.5.0",
     "fastify-helmet": "^1.0.3",
+    "remove-markdown": "^0.3.0",
     "steem": "^0.7.1"
   },
   "devDependencies": {
