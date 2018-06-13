@@ -12,19 +12,17 @@ module.exports = (fastify, opts, next) => {
       start_permlink: req.query.startPermlink || null
     }
     steem.api.getDiscussionsByTrending(query, (err, res) => {
-      if (err) throw err
-      reply.send(formatResponseArray(res))
+      reply.send(formatResponseArray(res, err))
     })
   })
 
   fastify.get('/articles/:author/:permlink', opts, (req, reply) => {
     reply.header('Content-Type', 'application/json').code(200)
     if (req.params === undefined || !req.params.author || !req.params.permlink) {
-      reply.send({error: 'Missing query param'})
+      reply.send({error: 'Missing query params'})
     } else {
       steem.api.getContent(req.params.author, req.params.permlink, (err, res) => {
-        if (err) throw err
-        reply.send(formatResponseObject(res))
+        reply.send(formatResponseObject(res, err))
       })
     }
   })
@@ -32,28 +30,27 @@ module.exports = (fastify, opts, next) => {
   fastify.get('/articles/:category/:author/:permlink/comments', opts, (req, reply) => {
     reply.header('Content-Type', 'application/json').code(200)
     if (req.params === undefined || !req.params.category | !req.params.author || !req.params.permlink) {
-      reply.send({error: 'Missing query param'})
+      reply.send({error: 'Missing query params'})
     } else {
       steem.api.getState(`/${req.params.category}/@${req.params.author}/${req.params.permlink}`, (err, res) => {
-        if (err) throw err
-        reply.send(formatCommentsResponse(res))
+        reply.send(formatCommentsResponse(res, err))
       })
     }
   })
 
   next()
 }
-const formatCommentsResponse = res => {
+const formatCommentsResponse = (res, err) => {
   const response = []
   const content = res.content
 
   Object.keys(content).forEach(key => {
     response.push(content[key])
   })
-  return response
+  return Object.assign({}, response, {error: null || err})
 }
 
-const formatResponseObject = el => {
+const formatResponseObject = (el, err) => {
   const metadata = JSON.parse(el.json_metadata)
   const tags = metadata.tags
   const users = metadata.users
@@ -76,8 +73,10 @@ const formatResponseObject = el => {
     users: users,
     images: images,
     links: links,
-    pendingPayoutValue: el.pending_payout_value
+    pendingPayoutValue: el.pending_payout_value,
+    netVotes: el.net_votes,
+    error: null || err
   }
 }
 
-const formatResponseArray = res => res.map(el => formatResponseObject(el))
+const formatResponseArray = (res, err) => res.map(el => formatResponseObject(el, err))
