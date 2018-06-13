@@ -22,6 +22,7 @@
   "homepage": "https://github.com/xdk78/osteem-api#readme",
   "dependencies": {
     "fastify": "^1.5.0",
+    "fastify-compress": "^0.6.0",
     "fastify-helmet": "^1.0.3",
     "remove-markdown": "^0.3.0",
     "steem": "^0.7.1"
