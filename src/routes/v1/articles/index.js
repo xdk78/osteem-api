@@ -84,7 +84,7 @@ const formatResponseObject = el => {
     images: images || [],
     links: links || [],
     pendingPayoutValue: el.pending_payout_value,
-    netVotes: el.net_votes
+    votes: el.net_votes
   }
 }
 
