@@ -5,11 +5,11 @@ module.exports = (fastify, opts, next) => {
   fastify.get('/articles/trending', opts, (req, reply) => {
     reply.header('Content-Type', 'application/json').code(200)
     const query = {
-      tag: null,
-      limit: 20,
+      tag: req.query.tag || null,
+      limit: req.query.limit || 20,
       truncate_body: 228,
-      start_author: null,
-      start_permlink: null
+      start_author: req.query.startAuthor || null,
+      start_permlink: req.query.startPermlink || null
     }
     steem.api.getDiscussionsByTrending(query, (err, res) => {
       if (err) throw err
@@ -76,8 +76,7 @@ const formatResponseObject = el => {
     users: users,
     images: images,
     links: links,
-    pendingPayoutValue: el.pending_payout_value,
-    activeVotes: el.active_votes
+    pendingPayoutValue: el.pending_payout_value
   }
 }
 
