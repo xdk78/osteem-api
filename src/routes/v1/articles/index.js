@@ -1,5 +1,6 @@
 const steem = require('steem')
 const removeMd = require('remove-markdown')
+const marked = require('marked')
 
 module.exports = (fastify, opts, next) => {
   fastify.get('/articles/trending', opts, (req, reply) => {
@@ -75,6 +76,7 @@ const formatResponseObject = el => {
     parentPermlink: el.parent_permlink,
     title: el.title,
     description: removeMd(el.body),
+    body: marked(el.body),
     replies: el.replies || [],
     created: el.created,
     depth: el.depth,
